@@ -17,7 +17,17 @@ namespace BoletoNetCore
             // C1 = 'C' - SICREDI sem Registro Impressão Completa pelo Sicredi
             // C2 = 'C' - SICREDI sem Registro Pedido de bloquetos pré-impressos
             if (boleto.VariacaoCarteira.Equals("A"))
+            {
                 detalhe = GerarDetalheRemessaCNAB400_A(boleto, registro);
+                var strline = GerarDetalheRemessaCNAB400_A_Registro7(boleto, registro);
+                if (!string.IsNullOrWhiteSpace(strline))
+                {
+                    detalhe += Environment.NewLine;
+                    detalhe += strline;
+                    registro++;
+                }
+                
+            }
             else if (boleto.VariacaoCarteira.Equals("C1"))
                 detalhe = GerarDetalheRemessaCNAB400_C1(boleto, registro);
             else if (boleto.VariacaoCarteira.Equals("C2"))
@@ -193,6 +203,40 @@ namespace BoletoNetCore
             catch (Exception ex)
             {
                 throw new Exception("Erro ao gerar DETALHE do arquivo CNAB400.", ex);
+            }
+        }
+
+        private string GerarDetalheRemessaCNAB400_A_Registro7(Boleto boleto, int numeroRegistro)
+        {
+            try
+            {
+                numeroRegistro++;
+                TRegistroEDI reg = new TRegistroEDI();
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0001, 001, 0, "7", ' '));
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0002, 015, 0, boleto.NossoNumero + boleto.NossoNumeroDV, '0'));
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0017, 010, 0, boleto.NumeroDocumento, ' '));
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0027, 014, 0, boleto.Pagador.CPFCNPJ, '0'));
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0041, 014, 0, Beneficiario.CPFCNPJ, '0'));
+
+
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediDataDDMMAA___________, 0055, 006, 0, boleto.DataDesconto2, '0'));                                       
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0061, 013, 2, boleto.ValorDesconto2, '0'));
+
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediDataDDMMAA___________, 0074, 006, 0, boleto.DataDesconto3, '0'));                                       
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0080, 013, 2, boleto.ValorDesconto3, '0'));
+
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0093, 302, 0, string.Empty, ' '));                                      
+                reg.CamposEDI.Add(new TCampoRegistroEDI(TTiposDadoEDI.ediNumericoSemSeparador_, 0395, 006, 0, numeroRegistro, '0'));                                       
+
+                reg.CodificarLinha();
+
+                string _detalhe = Utils.SubstituiCaracteresEspeciais(reg.LinhaRegistro);
+
+                return _detalhe;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao gerar DETALHE Registro 7 do arquivo CNAB400.", ex);
             }
         }
         public string GerarMensagemRemessa(Boleto boleto, ref int numeroRegistro)

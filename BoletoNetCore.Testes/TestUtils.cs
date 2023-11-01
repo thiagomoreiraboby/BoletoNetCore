@@ -16,8 +16,8 @@ namespace BoletoNetCore.Testes
         {
             return new Beneficiario
             {
-                CPFCNPJ = "86.875.666/0001-09",
-                Nome = "Beneficiario Teste",
+                CPFCNPJ = "23.941.433/0001-47",
+                Nome = "Ucondo",
                 Codigo = codigoBeneficiario,
                 CodigoDV = digitoCodigoBeneficiario,
                 CodigoTransmissao = codigoTransmissao,

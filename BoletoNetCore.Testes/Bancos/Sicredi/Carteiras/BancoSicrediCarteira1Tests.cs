@@ -13,26 +13,26 @@ namespace BoletoNetCore.Testes
         {
             var contaBancaria = new ContaBancaria
             {
-                Agencia = "0156",
-                Conta = "85305",
-                DigitoConta = "4",
+                Agencia = "0434",
+                Conta = "039982",
+                DigitoConta = "3",
                 CarteiraPadrao = "1",
                 TipoCarteiraPadrao = TipoCarteira.CarteiraCobrancaSimples,
                 VariacaoCarteiraPadrao = "A",
                 TipoFormaCadastramento = TipoFormaCadastramento.ComRegistro,
                 TipoImpressaoBoleto = TipoImpressaoBoleto.Empresa,
-                OperacaoConta = "05"
+                OperacaoConta = "28"
 
             };
             _banco = Banco.Instancia(Bancos.Sicredi);
-            _banco.Beneficiario = TestUtils.GerarBeneficiario("85305", "", "", contaBancaria);
+            _banco.Beneficiario = TestUtils.GerarBeneficiario("39982", "", "", contaBancaria);
             _banco.FormataBeneficiario();
         }
 
         [Test]
         public void Sicredi_1_REM400()
         {
-            TestUtils.TestarHomologacao(_banco, TipoArquivo.CNAB400, nameof(BancoSicrediCarteira1Tests), 9, true, "N", 00001);
+            TestUtils.TestarHomologacao(_banco, TipoArquivo.CNAB400, nameof(BancoSicrediCarteira1Tests), 1, true, "N", 00015);
         }
 
         [Test]
