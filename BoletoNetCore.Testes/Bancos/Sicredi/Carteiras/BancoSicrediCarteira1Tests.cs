@@ -32,7 +32,7 @@ namespace BoletoNetCore.Testes
         [Test]
         public void Sicredi_1_REM400()
         {
-            TestUtils.TestarHomologacao(_banco, TipoArquivo.CNAB400, nameof(BancoSicrediCarteira1Tests), 1, true, "N", 00015);
+            TestUtils.TestarHomologacao(_banco, TipoArquivo.CNAB400, nameof(BancoSicrediCarteira1Tests), 1, true, "N", 0000);
         }
 
         [Test]
